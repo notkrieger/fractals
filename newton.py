@@ -5,10 +5,11 @@ import matplotlib.pyplot as plt
 
 
 # main method
-max_iter = 50 # more iterations may be required for larger order polynomials
-res = 100
-x = np.linspace(-3, 3, res)
-y = np.linspace(-3, 3, res)
+max_iter = 100 # more iterations may be required for larger order polynomials
+res = 1000
+low, high = 0.5, 1.5
+x = np.linspace(low, high, res)
+y = np.linspace(low, high, res)
 
 X, Y = np.meshgrid(x, y)
 Z = X + 1j * Y
@@ -19,7 +20,7 @@ iters = np.zeros_like(Z, dtype='float') # percentage of max_iters before converg
 # line to change to generate new fractals
 # can handle complex numbers but only use imaginary part for working graph titles
 # a+bi doesnt appear to make much of a difference from bi anyway??? -- no idea if this is correct
-p = [1, 1, -1, 1, -5j, 6] # p[0] + p[1] * x + p[2] * x^2 + ...
+p = [-16, 0, 0, 0, 15, 0, 0, 0, 1] # p[0] + p[1] * x + p[2] * x^2 + ...
 
 
 poly = np.polynomial.Polynomial(p)
@@ -114,7 +115,7 @@ for i in range(res):
         final[i][j][2] = col[2]
 
 # plot fractal
-plt.imshow(final, cmap='viridis')
+plt.imshow(final, cmap='viridis', extent = [low, high, low, high])
 plt.title("Newton's Fractal of: {}".format(custom_poly_str(p)))
 plt.xlabel('Re')
 plt.ylabel('Im')
