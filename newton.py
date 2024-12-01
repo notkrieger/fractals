@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 # main method
-max_iter = 50
+max_iter = 50 # more iterations may be required for larger order polynomials
 res = 1000
 x = np.linspace(-3, 3, res)
 y = np.linspace(-3, 3, res)
@@ -14,7 +14,7 @@ X, Y = np.meshgrid(x, y)
 Z = X + 1j * Y
 fractal = np.zeros_like(Z, dtype='int') # list of ints showing which root a point goes to
 iters = np.zeros_like(Z, dtype='float') # percentage of max_iters before convergance
-p = [8, 1, 3, 7, 2, 4, 5, 6] # p[0] + p[1] * x + p[2] * x^2
+p = [-8, 1, -1, 4, 0, 6] # p[0] + p[1] * x + p[2] * x^2
 poly = np.polynomial.Polynomial(p)
 eps = 0.000001
 
@@ -26,7 +26,7 @@ for i in range(max_iter):
         iters[mask] = i / max_iter
         Z[mask] = np.nan # stop searching for solved
 
-
+# make polynomial pretty for graph title
 def custom_poly_str(coeffs):
     str = "f(x) = "
     order = len(coeffs) - 1
@@ -40,7 +40,10 @@ def custom_poly_str(coeffs):
                 continue
 
             if abs(i) == 1:
-                str += f"x"
+                if i > 0:
+                    str += f"x"
+                else:
+                    str += f"-x"
             else:
                 str += f"{i}x"
 
