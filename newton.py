@@ -17,7 +17,9 @@ iters = np.zeros_like(Z, dtype='float') # percentage of max_iters before converg
 
 
 # line to change to generate new fractals
-p = [-7, 4, -5, 11, -2, 5, 3] # p[0] + p[1] * x + p[2] * x^2 + ...
+# can handle complex numbers but only use imaginary part for working graph titles
+# a+bi doesnt appear to make much of a difference from bi anyway??? -- no idea if this is correct
+p = [1, 2, -3, 4j, -5j, 6] # p[0] + p[1] * x + p[2] * x^2 + ...
 
 
 poly = np.polynomial.Polynomial(p)
@@ -31,33 +33,32 @@ for i in range(max_iter):
         iters[mask] = i / max_iter
         Z[mask] = np.nan # stop searching for solved
 
-# make polynomial pretty for graph title
+# make polynomial equation pretty for graph title
 def custom_poly_str(coeffs):
-    str = "f(x) = "
-    order = len(coeffs) - 1
-    for i in reversed(coeffs):
-        if i != 0:
-            if i > 0 and order != len(coeffs) - 1:
-                str += "+"
-
-            if order == 0:
-                str += f"{i}"
-                continue
-
-            if abs(i) == 1:
-                if i > 0:
-                    str += f"x"
-                else:
-                    str += f"-x"
-            else:
-                str += f"{i}x"
-
-            if order > 1:
-                str += f"$^{order}$"
-
+    str1 = "f(x) = "
+    order = len(coeffs)
+    for ind, i in enumerate(reversed(coeffs)):
         order -= 1
+        si = str(i)
+        if abs(np.imag(i)) > 0:
+            if si[0] == '(': # negative number
+                si = si[3:-1]
 
-    return str
+        if order == len(coeffs) - 1:
+            str1 += si
+            str1 += f"$x^{order}$"
+            continue
+        else:
+            if i == 0:
+                continue
+            if si[0] != '-':
+                si = "+" + si
+            str1 += si
+            if order > 1:
+                str1 += f"$x^{order}$"
+            if order == 1:
+                str1 += 'x'
+    return str1
 
 def hsv_to_rgb(col):
     h, s, v = col
@@ -99,6 +100,7 @@ def colour(fractal, iters):
 HSV = colour(fractal, iters)
 
 final = np.zeros((res, res, 3), dtype='float')
+# convert hsv to rgb
 for i in range(res):
     for j in range(res):
 
@@ -107,7 +109,7 @@ for i in range(res):
         final[i][j][1] = col[1]
         final[i][j][2] = col[2]
 
-
+# plot fractal
 plt.imshow(final, cmap='viridis')
 plt.title("Newton's Fractal of: {}".format(custom_poly_str(p)))
 plt.xlabel('Re')
