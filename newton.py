@@ -14,7 +14,12 @@ X, Y = np.meshgrid(x, y)
 Z = X + 1j * Y
 fractal = np.zeros_like(Z, dtype='int') # list of ints showing which root a point goes to
 iters = np.zeros_like(Z, dtype='float') # percentage of max_iters before convergance
-p = [-8, 1, -1, 4, 0, 6] # p[0] + p[1] * x + p[2] * x^2
+
+
+# line to change to generate new fractals
+p = [-7, 4, -5, 11, -2, 5, 3] # p[0] + p[1] * x + p[2] * x^2 + ...
+
+
 poly = np.polynomial.Polynomial(p)
 eps = 0.000001
 
